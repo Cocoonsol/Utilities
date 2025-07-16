@@ -1,0 +1,40 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Cloudinary Video Embed - Dynamic</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background: #000;
+    }
+    video {
+      max-width: 100%;
+      height: auto;
+    }
+  </style>
+</head>
+<body>
+  <video id="videoPlayer" width="640" height="360" controls autoplay muted playsinline>
+    <source id="videoSource" src="" type="video/mp4">
+    Your browser does not support the video tag.
+  </video>
+
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const videoURL = params.get("video");
+
+    if (videoURL) {
+      const videoSource = document.getElementById("videoSource");
+      videoSource.src = videoURL;
+      document.getElementById("videoPlayer").load();
+    }
+  </script>
+</body>
+</html>
