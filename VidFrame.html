@@ -1,0 +1,53 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Cloudinary Video Embed - Dynamic with Defaults</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background: #000;
+    }
+    video {
+      max-width: 100%;
+      height: auto;
+    }
+  </style>
+</head>
+<body>
+  <video id="videoPlayer" width="640" height="360">
+    <source id="videoSource" src="" type="video/mp4">
+    Your browser does not support the video tag.
+  </video>
+
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const videoURL = params.get("video");
+    const videoEl = document.getElementById("videoPlayer");
+
+    if (videoURL) {
+      document.getElementById("videoSource").src = videoURL;
+      videoEl.load();
+    }
+
+    // Default behavior: autoplay OFF, muted ON, playsinline ON, controls ON; loop OFF
+    const autoplay = params.get("autoplay") === "1";
+    const muted = params.get("muted") !== "0";
+    const loop = params.get("loop") === "1";
+    const playsinline = params.get("playsinline") !== "0";
+    const controls = params.get("controls") !== "0";
+
+    if (autoplay) videoEl.setAttribute("autoplay", "");
+    if (muted) videoEl.setAttribute("muted", "");
+    if (loop) videoEl.setAttribute("loop", "");
+    if (playsinline) videoEl.setAttribute("playsinline", "");
+    if (controls) videoEl.setAttribute("controls", "");
+  </script>
+</body>
+</html>
