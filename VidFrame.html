@@ -29,11 +29,16 @@
   <script>
     const params = new URLSearchParams(window.location.search);
     const videoURL = params.get("video");
+    const poster = params.get("poster");
     const videoEl = document.getElementById("videoPlayer");
 
     if (videoURL) {
       document.getElementById("videoSource").src = videoURL;
       videoEl.load();
+    }
+
+    if (poster) {
+      videoEl.setAttribute("poster", poster);
     }
 
     // Default behavior: autoplay OFF, muted ON, playsinline ON, controls ON; loop OFF
