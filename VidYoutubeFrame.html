@@ -196,51 +196,65 @@
     </div>
   </div>
 
-  <script>
-    const params = new URLSearchParams(window.location.search);
+ <script>
+  const params = new URLSearchParams(window.location.search);
 
-    const videoURL = params.get("video");
-    const poster = params.get("poster");
-    const controls = params.get("controls") !== "0";
+  const videoURL = params.get("video");
+  const poster = params.get("poster");
 
-    const container = document.getElementById("playerContainer");
-    const overlay = document.getElementById("posterOverlay");
-    const posterImg = document.getElementById("posterImg");
+  // NEW: read params properly
+  const controls = params.get("controls") !== "0";
+  const autoplay = params.get("autoplay") === "1";
+  const muted = params.get("muted") === "1";
 
-    if (poster) posterImg.src = poster;
+  const container = document.getElementById("playerContainer");
+  const overlay = document.getElementById("posterOverlay");
+  const posterImg = document.getElementById("posterImg");
 
-    overlay.addEventListener("click", () => {
-      overlay.style.display = "none";
+  // Set poster image
+  if (poster) posterImg.src = poster;
 
-      if (videoURL && videoURL.includes("youtube.com")) {
-        const iframe = document.createElement("iframe");
+  overlay.addEventListener("click", () => {
+    overlay.style.display = "none";
 
-        let src = videoURL +
-          "?autoplay=1&mute=1&controls=" + (controls ? 1 : 0) +
-          "&playsinline=1&rel=0";
+    // ========================
+    // YOUTUBE
+    // ========================
+    if (videoURL && videoURL.includes("youtube.com")) {
+      const iframe = document.createElement("iframe");
 
-        iframe.src = src;
-        iframe.allow = "autoplay; encrypted-media; picture-in-picture";
-        iframe.allowFullscreen = true;
+      let src = videoURL + "?";
 
-        container.appendChild(iframe);
+      src += "autoplay=" + (autoplay ? 1 : 0) + "&";
+      src += "mute=" + (muted ? 1 : 0) + "&";
+      src += "controls=" + (controls ? 1 : 0) + "&";
+      src += "playsinline=1&rel=0";
 
-      } else if (videoURL) {
-        const video = document.createElement("video");
+      iframe.src = src;
+      iframe.allow = "autoplay; encrypted-media; picture-in-picture";
+      iframe.allowFullscreen = true;
 
-        video.autoplay = true;
-        video.muted = true;
-        video.controls = controls;
+      container.appendChild(iframe);
+    }
 
-        const source = document.createElement("source");
-        source.src = videoURL;
-        source.type = "video/mp4";
+    // ========================
+    // MP4 VIDEO
+    // ========================
+    else if (videoURL) {
+      const video = document.createElement("video");
 
-        video.appendChild(source);
-        container.appendChild(video);
-      }
-    });
-  </script>
+      video.autoplay = autoplay;
+      video.muted = muted;
+      video.controls = controls;
 
+      const source = document.createElement("source");
+      source.src = videoURL;
+      source.type = "video/mp4";
+
+      video.appendChild(source);
+      container.appendChild(video);
+    }
+  });
+</script>
 </body>
 </html>
