@@ -56,9 +56,8 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      font-weight: bold;
-      color: var(--cocoon-blue);
     }
+
     .brand-mark img {
       width: 80%;
       height: 80%;
@@ -75,16 +74,25 @@
       color: var(--cocoon-light);
     }
 
+    /* FIXED VIDEO AREA */
     .video-frame {
       position: relative;
+      width: 100%;
+      aspect-ratio: 16 / 9;
       overflow: hidden;
       border-radius: 20px;
       background: black;
     }
 
-    iframe, video {
+    #playerContainer {
       width: 100%;
-      aspect-ratio: 16 / 9;
+      height: 100%;
+    }
+
+    #playerContainer iframe,
+    #playerContainer video {
+      width: 100%;
+      height: 100%;
       border: 0;
       display: block;
     }
@@ -124,7 +132,7 @@
       border-bottom: 14px solid transparent;
     }
 
-    /* MOBILE UX */
+    /* MOBILE */
     @media (max-width: 768px) {
       .video-section {
         width: 100%;
@@ -141,15 +149,6 @@
       .brand-mark {
         width: 32px;
         height: 32px;
-        font-size: 12px;
-      }
-
-      .brand-text strong {
-        font-size: 14px;
-      }
-
-      .brand-text span {
-        font-size: 10px;
       }
 
       .play-button {
@@ -174,7 +173,7 @@
     <div class="video-header">
       <div class="brand">
         <div class="brand-mark">
-             <img src="https://res.cloudinary.com/dupuoby9h/image/upload/v1777379529/Cocoon_Contrast_logo_Standalone_inglfq.png" alt="Cocoon Logo">
+          <img src="https://res.cloudinary.com/dupuoby9h/image/upload/v1777379529/Cocoon_Contrast_logo_Standalone_inglfq.png">
         </div>
         <div class="brand-text">
           <strong>Cocoon Solutions</strong>
@@ -187,7 +186,7 @@
 
       <!-- Poster -->
       <div id="posterOverlay" class="poster-overlay">
-        <img id="posterImg" src="">
+        <img id="posterImg">
         <div class="play-button"></div>
       </div>
 
@@ -202,7 +201,6 @@
 
     const videoURL = params.get("video");
     const poster = params.get("poster");
-
     const controls = params.get("controls") !== "0";
 
     const container = document.getElementById("playerContainer");
@@ -214,10 +212,12 @@
     overlay.addEventListener("click", () => {
       overlay.style.display = "none";
 
-      if (videoURL.includes("youtube.com")) {
+      if (videoURL && videoURL.includes("youtube.com")) {
         const iframe = document.createElement("iframe");
 
-        let src = videoURL + "?autoplay=1&mute=1&controls=" + (controls ? 1 : 0) + "&playsinline=1&rel=0";
+        let src = videoURL +
+          "?autoplay=1&mute=1&controls=" + (controls ? 1 : 0) +
+          "&playsinline=1&rel=0";
 
         iframe.src = src;
         iframe.allow = "autoplay; encrypted-media; picture-in-picture";
@@ -225,7 +225,7 @@
 
         container.appendChild(iframe);
 
-      } else {
+      } else if (videoURL) {
         const video = document.createElement("video");
 
         video.autoplay = true;
