@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cocoon Video Player</title>
+
+  <style>
+    :root {
+      --cocoon-blue: #1F3B4D;
+      --cocoon-light: #E5E5E5;
+      --cocoon-soft-blue: #A9CCE3;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      min-height: 100dvh;
+      background: radial-gradient(circle at top, #2a4d63 0%, #071018 60%, #000 100%);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-family: Arial, sans-serif;
+    }
+
+    .video-section {
+      width: 92%;
+      max-width: 980px;
+      padding: 20px;
+      border-radius: 26px;
+      background: linear-gradient(145deg, rgba(255,255,255,0.12), rgba(255,255,255,0.03));
+      box-shadow: 0 30px 80px rgba(0,0,0,0.5);
+      backdrop-filter: blur(12px);
+    }
+
+    .video-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+      color: white;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .brand-mark {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--cocoon-soft-blue), white);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      color: var(--cocoon-blue);
+    }
+
+    .brand-text strong {
+      display: block;
+      font-size: 16px;
+    }
+
+    .brand-text span {
+      font-size: 11px;
+      color: var(--cocoon-light);
+    }
+
+    .video-frame {
+      position: relative;
+      overflow: hidden;
+      border-radius: 20px;
+      background: black;
+    }
+
+    iframe, video {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      border: 0;
+      display: block;
+    }
+
+    /* Poster overlay */
+    .poster-overlay {
+      position: absolute;
+      inset: 0;
+      z-index: 5;
+      cursor: pointer;
+    }
+
+    .poster-overlay img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .play-button {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 80px;
+      height: 80px;
+      transform: translate(-50%, -50%);
+      border-radius: 50%;
+      background: rgba(255,255,255,0.9);
+    }
+
+    .play-button::after {
+      content: "";
+      position: absolute;
+      left: 32px;
+      top: 24px;
+      border-left: 22px solid var(--cocoon-blue);
+      border-top: 14px solid transparent;
+      border-bottom: 14px solid transparent;
+    }
+
+    /* MOBILE UX */
+    @media (max-width: 768px) {
+      .video-section {
+        width: 100%;
+        padding: 10px;
+        border-radius: 0;
+      }
+
+      .video-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 6px;
+      }
+
+      .brand-mark {
+        width: 32px;
+        height: 32px;
+        font-size: 12px;
+      }
+
+      .brand-text strong {
+        font-size: 14px;
+      }
+
+      .brand-text span {
+        font-size: 10px;
+      }
+
+      .play-button {
+        width: 64px;
+        height: 64px;
+      }
+
+      .play-button::after {
+        left: 26px;
+        top: 20px;
+        border-left-width: 18px;
+        border-top-width: 12px;
+        border-bottom-width: 12px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="video-section">
+    <div class="video-header">
+      <div class="brand">
+        <div class="brand-mark">C</div>
+        <div class="brand-text">
+          <strong>Cocoon Solutions</strong>
+          <span>Digital Dentistry • Clinical Thinking • Human Service</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="video-frame">
+
+      <!-- Poster -->
+      <div id="posterOverlay" class="poster-overlay">
+        <img id="posterImg" src="">
+        <div class="play-button"></div>
+      </div>
+
+      <!-- Player -->
+      <div id="playerContainer"></div>
+
+    </div>
+  </div>
+
+  <script>
+    const params = new URLSearchParams(window.location.search);
+
+    const videoURL = params.get("video");
+    const poster = params.get("poster");
+
+    const controls = params.get("controls") !== "0";
+
+    const container = document.getElementById("playerContainer");
+    const overlay = document.getElementById("posterOverlay");
+    const posterImg = document.getElementById("posterImg");
+
+    if (poster) posterImg.src = poster;
+
+    overlay.addEventListener("click", () => {
+      overlay.style.display = "none";
+
+      if (videoURL.includes("youtube.com")) {
+        const iframe = document.createElement("iframe");
+
+        let src = videoURL + "?autoplay=1&mute=1&controls=" + (controls ? 1 : 0) + "&playsinline=1&rel=0";
+
+        iframe.src = src;
+        iframe.allow = "autoplay; encrypted-media; picture-in-picture";
+        iframe.allowFullscreen = true;
+
+        container.appendChild(iframe);
+
+      } else {
+        const video = document.createElement("video");
+
+        video.autoplay = true;
+        video.muted = true;
+        video.controls = controls;
+
+        const source = document.createElement("source");
+        source.src = videoURL;
+        source.type = "video/mp4";
+
+        video.appendChild(source);
+        container.appendChild(video);
+      }
+    });
+  </script>
+
+</body>
+</html>
